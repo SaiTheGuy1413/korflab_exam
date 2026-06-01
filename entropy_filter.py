@@ -1,8 +1,32 @@
 import sys
 import mcb185
 import math
+import gzip
 
-for defline, seq in mcb185.read_fasta(sys.argv[1]):
+def read_fasta(filename):
+	if   filename == '-':          fp = sys.stdin
+	elif filename.endswith('.gz'): fp = gzip.open(filename, 'rt')
+	else:                          fp = open(filename)
+	name = None
+	seqs = []
+	while True:
+		line = fp.readline()
+		if line == '': break
+		line = line.rstrip()
+		if line.startswith('>'):
+			if len(seqs) > 0:
+				yield(name, ''.join(seqs))
+				name = line[1:]
+				seqs = []
+			else:
+				name = line[1:]
+		else:
+			seqs.append(line)
+
+	yield(name, ''.join(seqs))
+	fp.close()
+
+for defline, seq in read_fasta(sys.argv[1]):
     converted = list(seq)
     for i in range(len(seq)- 11 + 1):
         window = seq[i:i+11]
