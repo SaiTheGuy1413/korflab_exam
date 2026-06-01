@@ -15,10 +15,6 @@ def reverse_complement(seq):
     for nt in reversed(seq):
         result.append(complement[nt])
     return ''.join(result)
-
-'''def reverse_complement(seq):
-    complement = {'A':'T', 'T':'A', 'G':'C', 'C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
-    return ''.join(complement[nt] for nt in reversed(seq))'''
     
 with gzip.open(sys.argv[1], 'rt') as file:
     for line in file:
